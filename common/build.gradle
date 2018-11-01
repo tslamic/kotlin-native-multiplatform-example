@@ -1,0 +1,36 @@
+/*
+ * The content of this file is a literal copy-paste from the Multiplatform Project: iOS and Android
+ * tutorial you can find here:
+ *
+ *      https://kotlinlang.org/docs/tutorials/native/mpp-ios-android.html#creating-an-android-project
+ */
+
+apply plugin: 'kotlin-multiplatform'
+
+kotlin {
+    targets {
+        final def iOSTarget = System.getenv('SDK_NAME')?.startsWith("iphoneos")       \
+                                    ? presets.iosArm64 : presets.iosX64
+
+        fromPreset(iOSTarget, 'iOS') {
+            compilations.main.outputKinds('FRAMEWORK')
+        }
+
+        fromPreset(presets.jvm, 'android')
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+            api 'org.jetbrains.kotlin:kotlin-stdlib-common'
+        }
+
+        androidMain.dependencies {
+            api 'org.jetbrains.kotlin:kotlin-stdlib'
+        }
+    }
+}
+
+// workaround for https://youtrack.jetbrains.com/issue/KT-27170
+configurations {
+    compileClasspath
+}
